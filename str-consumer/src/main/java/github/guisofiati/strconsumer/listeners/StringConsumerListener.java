@@ -1,7 +1,9 @@
 package github.guisofiati.strconsumer.listeners;
 
 import github.guisofiati.strconsumer.custom.StringConsumerCustomListener;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,8 +17,10 @@ public class StringConsumerListener {
 //            },
 //            containerFactory = "strContainerFactory")
     @StringConsumerCustomListener(groupId = "group-1")
+    @SneakyThrows
     public void create(String message) {
         log.info("CREATE ::: Received message: {}", message);
+        throw new IllegalArgumentException("Error...");
     }
 
     @StringConsumerCustomListener(groupId = "group-1")
@@ -24,7 +28,7 @@ public class StringConsumerListener {
         log.info("LOG ::: Received message: {}", message);
     }
 
-    @StringConsumerCustomListener(groupId = "group-2")
+    @KafkaListener(topics = "str-topic", groupId = "group-2", containerFactory = "validMessageContainerFactory")
     public void history(String message) {
         log.info("HISTORY ::: Received message: {}", message);
     }
